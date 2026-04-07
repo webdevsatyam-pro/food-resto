@@ -12,6 +12,7 @@ import Login from "./Auth/Login";
 import Signup from "./Auth/Signup";
 import ForgotPassword from "./Auth/ForgotPassword";
 import ResetPassword from "./Auth/ResetPassword";
+import Checkout from "./pages/Checkout";
 
 function App() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -27,6 +28,10 @@ function App() {
   // Function: Cart se item hatane ke liye
   const removeFromCart = (cartId) => {
     setCartItems(cartItems.filter((item) => item.cartId !== cartId));
+  };
+
+  const clearCart = () => {
+    setCartItems([]); // Cart array ko khali kar dega
   };
 
   return (
@@ -61,6 +66,10 @@ function App() {
           <Route path="/signup" element={<Signup />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/reset-password" element={<ResetPassword />} />
+          <Route
+            path="/checkout"
+            element={<Checkout cartItems={cartItems} clearCart={clearCart} />}
+          />
         </Routes>
       </main>
     </div>

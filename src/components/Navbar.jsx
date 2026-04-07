@@ -8,10 +8,23 @@ const Navbar = ({ setSearchTerm, cartCount, onCartClick }) => {
     <nav className="bg-white shadow-md sticky top-0 z-50 px-4 py-3">
       <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
         {/* 1. Logo (Click karne pe Home pe jayega) */}
-        <Link to="/" className="flex items-center gap-2 group">
-          <span className="text-2xl font-black text-orange-600 tracking-tighter group-hover:scale-105 transition-transform">
-            FOODIE<span className="text-gray-800">HUB</span>
-          </span>
+        <Link
+          to="/"
+          className="flex items-center gap-2 group transition-all duration-300 transform hover:scale-105 active:scale-90 cursor-pointer select-none">
+          {/* Logo Container */}
+          <div className="flex items-center">
+            <span className="text-2xl font-black tracking-tighter transition-colors duration-300">
+              <span className="text-orange-600 group-hover:text-orange-500">
+                FOODIE
+              </span>
+              <span className="text-gray-800 group-hover:text-gray-900">
+                HUB
+              </span>
+            </span>
+
+            {/* Optional: Chhota sa dot ya icon jo logo ke sath move ho */}
+            <div className="w-2 h-2 bg-orange-500 rounded-full ml-1 group-hover:animate-ping"></div>
+          </div>
         </Link>
 
         {/* 2. Search Bar (Food filter ke liye) */}
