@@ -5,27 +5,25 @@ import { useNavigate } from "react-router-dom";
 const CartSidebar = ({ isOpen, onClose, cartItems, removeFromCart }) => {
   const navigate = useNavigate();
 
-  // Total calculate karne ke liye
+  // Total calculate (String se number bana kar)
   const total = cartItems.reduce(
     (acc, item) => acc + parseInt(item.price.replace("₹", "")),
     0,
   );
 
   const handleCheckout = () => {
-    onClose(); // Sidebar band karein
-    navigate("/checkout"); // Checkout page pe bhejein
+    onClose();
+    navigate("/checkout");
   };
 
   return (
     <>
-      {/* Overlay */}
       {isOpen && (
         <div
           className="fixed inset-0 bg-black/40 backdrop-blur-sm z-[60]"
           onClick={onClose}></div>
       )}
 
-      {/* Sidebar */}
       <div
         className={`fixed top-0 right-0 h-full w-80 md:w-[400px] bg-white z-[70] shadow-2xl transform transition-all duration-300 ${isOpen ? "translate-x-0" : "translate-x-full"}`}>
         <div className="p-6 border-b flex justify-between items-center bg-orange-500 text-white">
@@ -63,7 +61,6 @@ const CartSidebar = ({ isOpen, onClose, cartItems, removeFromCart }) => {
                     <h4 className="font-bold text-gray-800">{item.name}</h4>
                     <p className="text-orange-600 font-bold">{item.price}</p>
                   </div>
-                  {/* Delete Button Functional */}
                   <button
                     onClick={() => removeFromCart(item.cartId)}
                     className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition">
@@ -75,7 +72,6 @@ const CartSidebar = ({ isOpen, onClose, cartItems, removeFromCart }) => {
           )}
         </div>
 
-        {/* Checkout Footer */}
         {cartItems.length > 0 && (
           <div className="absolute bottom-0 left-0 w-full p-6 border-t bg-gray-50">
             <div className="flex justify-between items-center mb-6">
@@ -88,9 +84,8 @@ const CartSidebar = ({ isOpen, onClose, cartItems, removeFromCart }) => {
             </div>
             <button
               onClick={handleCheckout}
-              className="w-full bg-orange-500 text-white font-bold py-4 rounded-2xl hover:bg-orange-600 transition-all flex items-center justify-center gap-2 shadow-lg shadow-orange-200 uppercase tracking-wider">
-              Go to Checkout
-              <ArrowRight size={20} />
+              className="w-full bg-orange-500 text-white font-bold py-4 rounded-2xl hover:bg-orange-600 transition-all flex items-center justify-center gap-2 shadow-lg uppercase tracking-wider">
+              Go to Checkout <ArrowRight size={20} />
             </button>
           </div>
         )}

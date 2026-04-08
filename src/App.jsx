@@ -1,49 +1,49 @@
 import React, { useState } from "react";
 import { Routes, Route } from "react-router-dom";
-
-// Components
 import Navbar from "./components/Navbar";
+import BottomNav from "./components/BottomNav";
 import CartSidebar from "./components/CartSidebar";
 
 // Pages
-import Home from "./pages/Home";
+import Home from "./pages/Home"; // <--- Ye aapka naya Home page hai
+import Menus from "./pages/Menus";
+import Checkout from "./pages/Checkout";
 import Offers from "./pages/Offers";
 import Login from "./Auth/Login";
 import Signup from "./Auth/Signup";
-import ForgotPassword from "./Auth/ForgotPassword";
-import ResetPassword from "./Auth/ResetPassword";
-import Checkout from "./pages/Checkout";
 
 function App() {
-  const [searchTerm, setSearchTerm] = useState("");
   const [cartItems, setCartItems] = useState([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
 
-  // Function: Cart me item add karne ke liye
-  const addToCart = (food) => {
-    // Har item ko ek unique ID dena zaroori hai (index use kar sakte hain agar ID na ho)
-    setCartItems([...cartItems, { ...food, cartId: Date.now() }]);
+  const addToCart = (product) => {
+    const newItem = {
+      ...product,
+      cartId: Date.now(),
+      price:
+        typeof product.price === "string" ? product.price : `₹${product.price}`,
+    };
+    setCartItems([...cartItems, newItem]);
   };
 
-  // Function: Cart se item hatane ke liye
   const removeFromCart = (cartId) => {
     setCartItems(cartItems.filter((item) => item.cartId !== cartId));
   };
 
-  const clearCart = () => {
-    setCartItems([]); // Cart array ko khali kar dega
-  };
+  const clearCart = () => setCartItems([]);
 
   return (
-    <div className="min-h-screen bg-gray-50 font-sans">
-      {/* 1. Navbar: Har page pe dikhega */}
+    <div className="pb-20 md:pb-0 font-sans">
       <Navbar
-        setSearchTerm={setSearchTerm}
         cartCount={cartItems.length}
         onCartClick={() => setIsCartOpen(true)}
       />
 
-      {/* 2. Cart Sidebar: Sirf tab dikhega jab isCartOpen true ho */}
+      <BottomNav
+        cartCount={cartItems.length}
+        onCartClick={() => setIsCartOpen(true)}
+      />
+
       <CartSidebar
         isOpen={isCartOpen}
         onClose={() => setIsCartOpen(false)}
@@ -51,27 +51,40 @@ function App() {
         removeFromCart={removeFromCart}
       />
 
-      {/* 3. Saare Pages ke Routes */}
-      <main>
-        <Routes>
-          {/* Main Pages */}
-          <Route
-            path="/"
-            element={<Home searchTerm={searchTerm} addToCart={addToCart} />}
-          />
-          <Route path="/offers" element={<Offers />} />
+      <Routes>
+        {/* Home Page Route */}
+        <Route path="/" element={<Home />} />
 
-          {/* Auth Pages (Correctly Routed) */}
-          <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<Signup />} />
-          <Route path="/forgot-password" element={<ForgotPassword />} />
-          <Route path="/reset-password" element={<ResetPassword />} />
-          <Route
-            path="/checkout"
-            element={<Checkout cartItems={cartItems} clearCart={clearCart} />}
-          />
-        </Routes>
-      </main>
+        {/* Menus Page Route */}
+        <Route path="/menus" element={<Menus onAddToCart={addToCart} />} />
+
+        <Route path="/offers" element={<Offers />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/signup" element={<Signup />} />
+
+        <Route
+          path="/checkout"
+          element={<Checkout cartItems={cartItems} clearCart={clearCart} />}
+        />
+
+        {/* Placeholder Routes */}
+        <Route
+          path="/about"
+          element={
+            <div className="p-20 text-center text-2xl font-bold">
+              About Us Section
+            </div>
+          }
+        />
+        <Route
+          path="/contact"
+          element={
+            <div className="p-20 text-center text-2xl font-bold">
+              Contact Us Section
+            </div>
+          }
+        />
+      </Routes>
     </div>
   );
 }

@@ -32,7 +32,7 @@ const Signup = () => {
               Start your food journey with
             </p>
             {/* Highlighted Badge */}
-            <span className="bg-orange-500 text-white px-4 py-1 rounded-full font-black text-xs shadow-lg shadow-orange-200 flex items-center gap-1 animate-bounce mt-1">
+            <span className="bg-orange-500 text-white px-4 py-1 rounded-full font-black text-xs shadow-lg shadow-orange-200 flex items-center gap-1  mt-1">
               <ChefHat size={14} /> FOODIEHUB
             </span>
           </div>

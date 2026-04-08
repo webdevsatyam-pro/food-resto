@@ -1,112 +1,89 @@
 import React from "react";
+import { Star, Clock, Plus, Flame } from "lucide-react";
 
-const foodData = [
-  {
-    id: 1,
-    name: "Cheese Burger",
-    price: "₹149",
-    category: "Fast Food",
-    img: "🍔",
-  },
-  {
-    id: 2,
-    name: "Margherita Pizza",
-    price: "₹299",
-    category: "Pizza",
-    img: "🍕",
-  },
-  {
-    id: 3,
-    name: "Paneer Tikka",
-    price: "₹250",
-    category: "North Indian",
-    img: "🍢",
-  },
-  {
-    id: 4,
-    name: "Chicken Biryani",
-    price: "₹320",
-    category: "Main Course",
-    img: "🍛",
-  },
-  {
-    id: 5,
-    name: "Chocolate Brownie",
-    price: "₹120",
-    category: "Dessert",
-    img: "🍰",
-  },
-];
+const Home = ({ searchTerm = "", addToCart }) => {
+  const foodItems = [
+    {
+      id: 1,
+      name: "Special Biryani",
+      price: 250,
+      rating: 4.8,
+      time: "30 min",
+      img: "https://images.unsplash.com/photo-1589302168068-964664d93dc0?w=400",
+    },
+    {
+      id: 2,
+      name: "Burger Combo",
+      price: 180,
+      rating: 4.5,
+      time: "15 min",
+      img: "https://images.unsplash.com/photo-1571091718767-18b5b1457add?w=400",
+    },
+    {
+      id: 3,
+      name: "Cheese Pizza",
+      price: 350,
+      rating: 4.2,
+      time: "25 min",
+      img: "https://images.unsplash.com/photo-1604382354936-07c5d9983bd3?w=400",
+    },
+    {
+      id: 4,
+      name: "Paneer Tikka",
+      price: 210,
+      rating: 4.6,
+      time: "20 min",
+      img: "https://images.unsplash.com/photo-1567184109115-46f34563a61c?w=400",
+    },
+  ];
 
-const Home = ({ searchTerm, addToCart }) => {
-  const filteredFood = foodData.filter((item) =>
-    item.name.toLowerCase().includes(searchTerm.toLowerCase()),
+  const filteredFoods = foodItems.filter((f) =>
+    f.name.toLowerCase().includes(searchTerm.toLowerCase()),
   );
 
   return (
-    <div className="max-w-7xl mx-auto p-6">
-      <h1 className="text-3xl font-bold mb-8 text-gray-800">Popular Dishes</h1>
+    <div className="w-full bg-gray-50 pt-6">
+      <div className="max-w-7xl mx-auto px-4">
+        {/* Banner Section */}
+        <div className="bg-orange-500 rounded-3xl p-8 text-white mb-10 flex flex-col md:flex-row items-center justify-between">
+          <div>
+            <h1 className="text-4xl font-black mb-2 italic">Hungry?</h1>
+            <p className="text-lg opacity-90">
+              Order now and get 20% cashback!
+            </p>
+          </div>
+          <div className="hidden md:block bg-white/20 p-4 rounded-full">
+            <Flame size={60} />
+          </div>
+        </div>
 
-      {filteredFood.length > 0 ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {filteredFood.map((food) => (
+        {/* Food Grid */}
+        <h2 className="text-2xl font-bold mb-6 text-gray-800">
+          Popular Dishes
+        </h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 pb-20">
+          {filteredFoods.map((food) => (
             <div
               key={food.id}
-              className="bg-white rounded-xl shadow-lg overflow-hidden hover:scale-105 transition-transform duration-300 border border-gray-100">
-              <div className="h-40 bg-orange-50 flex items-center justify-center text-6xl">
-                {food.img}
-              </div>
-              <div className="p-4">
-                <h3 className="text-xl font-semibold text-gray-800">
-                  {food.name}
-                </h3>
-                <p className="text-gray-500 text-sm mb-4">{food.category}</p>
-
-                <div className="flex justify-between items-center mt-4">
-                  <span className="text-xl font-bold text-orange-600">
-                    {food.price}
-                  </span>
-
-                  {/* Professional Interactive Button */}
-                  <button
-                    onClick={() => addToCart(food)}
-                    className="
-      bg-orange-500 text-white px-5 py-2.5 rounded-xl font-bold
-      transition-all duration-200 
-      hover:bg-orange-600 hover:shadow-lg hover:-translate-y-0.5
-      active:scale-90 active:bg-orange-700
-      flex items-center gap-2 group
-    ">
-                    {/* Cart Icon jo hover pe thoda ghumta hai */}
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="18"
-                      height="18"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      className="group-hover:rotate-12 transition-transform">
-                      <circle cx="8" cy="21" r="1" />
-                      <circle cx="19" cy="21" r="1" />
-                      <path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12" />
-                    </svg>
-                    Add to Cart
-                  </button>
-                </div>
+              className="bg-white rounded-3xl p-4 shadow-sm border border-gray-100 hover:shadow-xl transition-all">
+              <img
+                src={food.img}
+                className="w-full h-40 object-cover rounded-2xl mb-4"
+                alt={food.name}
+              />
+              <h3 className="font-bold text-gray-900">{food.name}</h3>
+              <div className="flex justify-between items-center mt-4">
+                <span className="text-xl font-black">₹{food.price}</span>
+                <button
+                  onClick={() => addToCart(food)}
+                  className="bg-orange-500 text-white p-2 rounded-xl">
+                  <Plus size={20} />
+                </button>
               </div>
             </div>
           ))}
         </div>
-      ) : (
-        <div className="text-center py-20">
-          <p className="text-gray-500 text-xl">
-            Oops! No food found for "{searchTerm}"
-          </p>
-        </div>
-      )}
+      </div>
     </div>
   );
 };
