@@ -33,7 +33,7 @@ const Home = ({ searchTerm = "", addToCart }) => {
       price: 210,
       rating: 4.6,
       time: "20 min",
-      img: "https://images.unsplash.com/photo-1567184109115-46f34563a61c?w=400",
+      img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRf9tC5sOxSUzsCHVLWLjMY7HnphyZe_HiDhw&s",
     },
   ];
 

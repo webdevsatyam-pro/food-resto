@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { ShoppingCart, User, Tag, MoreVertical, X } from "lucide-react";
+import { NavLink } from "react-router-dom";
 
 const Navbar = ({ cartCount, onCartClick }) => {
   const [isAnimate, setIsAnimate] = useState(false);
@@ -29,15 +30,39 @@ const Navbar = ({ cartCount, onCartClick }) => {
 
         {/* 2. LAPTOP ONLY: Center Links */}
         <div className="hidden md:flex items-center gap-8 font-bold text-gray-700">
-          <Link to="/menus" className="hover:text-orange-600 transition">
+          <NavLink
+            to="/menus"
+            className={({ isActive }) =>
+              `hover:text-orange-600 transition relative after:absolute after:bottom-0 after:left-0 after:right-0 after:h-0.5 after:rounded-t after:bg-orange-600 after:transition-transform after:duration-300 after:origin-center ${
+                isActive
+                  ? "text-orange-600 after:scale-x-100"
+                  : "after:scale-x-0"
+              }`
+            }>
             Menus
-          </Link>
-          <Link to="/about" className="hover:text-orange-600 transition">
+          </NavLink>
+          <NavLink
+            to="/about"
+            className={({ isActive }) =>
+              `hover:text-orange-600 transition relative after:absolute after:bottom-0 after:left-0 after:right-0 after:h-0.5 after:rounded-t after:bg-orange-600 after:transition-transform after:duration-300 after:origin-center ${
+                isActive
+                  ? "text-orange-600 after:scale-x-100"
+                  : "after:scale-x-0"
+              }`
+            }>
             About
-          </Link>
-          <Link to="/contact" className="hover:text-orange-600 transition">
+          </NavLink>
+          <NavLink
+            to="/contact"
+            className={({ isActive }) =>
+              `hover:text-orange-600 transition relative after:absolute after:bottom-0 after:left-0 after:right-0 after:h-0.5 after:rounded-t after:bg-orange-600 after:transition-transform after:duration-300 after:origin-center ${
+                isActive
+                  ? "text-orange-600 after:scale-x-100"
+                  : "after:scale-x-0"
+              }`
+            }>
             Contact Us
-          </Link>
+          </NavLink>
         </div>
 
         {/* 3. Right Side Actions */}
