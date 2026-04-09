@@ -3,6 +3,7 @@ import { Routes, Route } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import BottomNav from "./components/BottomNav";
 import CartSidebar from "./components/CartSidebar";
+import Footer from "./components/Footer"; // <--- Footer Import kiya
 
 // Pages
 import Home from "./pages/Home";
@@ -11,6 +12,7 @@ import Checkout from "./pages/Checkout";
 import Offers from "./pages/Offers";
 import Login from "./Auth/Login";
 import Signup from "./Auth/Signup";
+import ScrollToTop from "./components/ScrollToTop";
 
 function App() {
   const [cartItems, setCartItems] = useState([]);
@@ -38,6 +40,7 @@ function App() {
 
   return (
     <div className="pb-20 md:pb-0 font-sans">
+      <ScrollToTop />
       <Navbar
         cartCount={cartItems.length}
         onCartClick={() => setIsCartOpen(true)}
@@ -56,7 +59,7 @@ function App() {
       />
 
       <Routes>
-        {/* FIX: Yahan addToCart={addToCart} pass kar diya hai */}
+        {/* Home Page Route */}
         <Route path="/" element={<Home addToCart={addToCart} />} />
 
         {/* Menus Page Route */}
@@ -89,6 +92,8 @@ function App() {
           }
         />
       </Routes>
+
+      <Footer />
     </div>
   );
 }
