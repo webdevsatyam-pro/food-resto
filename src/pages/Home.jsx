@@ -1,7 +1,25 @@
-import React from "react";
-import { Star, Clock, Plus, Flame } from "lucide-react";
+import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
+import {
+  Star,
+  Plus,
+  Flame,
+  Play,
+  ArrowRight,
+  Truck,
+  ShieldCheck,
+  Clock,
+  X,
+  ChevronLeft,
+  ChevronRight,
+  ShoppingCart,
+  CheckCircle2,
+} from "lucide-react";
 
 const Home = ({ searchTerm = "", addToCart }) => {
+  const [selectedItem, setSelectedItem] = useState(null);
+  const [currentImgIndex, setCurrentImgIndex] = useState(0);
+
   const foodItems = [
     {
       id: 1,
@@ -9,7 +27,13 @@ const Home = ({ searchTerm = "", addToCart }) => {
       price: 250,
       rating: 4.8,
       time: "30 min",
-      img: "https://images.unsplash.com/photo-1589302168068-964664d93dc0?w=400",
+      images: [
+        "https://images.unsplash.com/photo-1589302168068-964664d93dc0?w=800",
+        "https://images.unsplash.com/photo-1563379091339-03b21bc4a4f8?w=800",
+        "https://images.unsplash.com/photo-1552590635-27c2c21289f5?w=800",
+      ],
+      description:
+        "Aromatic basmati rice cooked with premium spices and tender meat pieces.",
     },
     {
       id: 2,
@@ -17,7 +41,13 @@ const Home = ({ searchTerm = "", addToCart }) => {
       price: 180,
       rating: 4.5,
       time: "15 min",
-      img: "https://images.unsplash.com/photo-1571091718767-18b5b1457add?w=400",
+      images: [
+        "https://images.unsplash.com/photo-1571091718767-18b5b1457add?w=800",
+        "https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=800",
+        "https://images.unsplash.com/photo-1550547660-d9450f859349?w=800",
+      ],
+      description:
+        "Double patty cheesy burger served with crispy fries and a chilled drink.",
     },
     {
       id: 3,
@@ -25,7 +55,13 @@ const Home = ({ searchTerm = "", addToCart }) => {
       price: 350,
       rating: 4.2,
       time: "25 min",
-      img: "https://images.unsplash.com/photo-1604382354936-07c5d9983bd3?w=400",
+      images: [
+        "https://images.unsplash.com/photo-1604382354936-07c5d9983bd3?w=800",
+        "https://images.unsplash.com/photo-1513104890138-7c749659a591?w=800",
+        "https://images.unsplash.com/photo-1571407970349-bc81e7e96d47?w=800",
+      ],
+      description:
+        "Freshly baked dough topped with premium mozzarella and fresh basil leaves.",
     },
     {
       id: 4,
@@ -33,57 +69,252 @@ const Home = ({ searchTerm = "", addToCart }) => {
       price: 210,
       rating: 4.6,
       time: "20 min",
-      img: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRf9tC5sOxSUzsCHVLWLjMY7HnphyZe_HiDhw&s",
+      images: [
+        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRf9tC5sOxSUzsCHVLWLjMY7HnphyZe_HiDhw&s",
+        "https://images.unsplash.com/photo-1599487488170-d11ec9c172f0?w=800",
+        "https://images.unsplash.com/photo-1666024276184-48f059b56326?w=800",
+      ],
+      description:
+        "Marinated cottage cheese cubes grilled with onions and bell peppers.",
     },
   ];
+
+  useEffect(() => {
+    let timer;
+    if (selectedItem) {
+      timer = setInterval(() => {
+        setCurrentImgIndex((prev) => (prev + 1) % selectedItem.images.length);
+      }, 3000);
+    }
+    return () => clearInterval(timer);
+  }, [selectedItem]);
 
   const filteredFoods = foodItems.filter((f) =>
     f.name.toLowerCase().includes(searchTerm.toLowerCase()),
   );
 
+  // Home.jsx ke andar handleAdd function ko bas check kar lein:
+  const handleAdd = (item) => {
+    if (typeof addToCart === "function") {
+      // Hamari cart logic 'img' key me photo mangti hai
+      const productToAdd = {
+        ...item,
+        img: item.images ? item.images[0] : item.img,
+      };
+      addToCart(productToAdd);
+    }
+  };
+
   return (
-    <div className="w-full bg-gray-50 pt-6">
+    <div className="w-full bg-[#FBFBFB] pt-6">
       <div className="max-w-7xl mx-auto px-4">
-        {/* Banner Section */}
-        <div className="bg-orange-500 rounded-3xl p-8 text-white mb-10 flex flex-col md:flex-row items-center justify-between">
+        {/* Banner */}
+        <div className="bg-orange-500 rounded-[2.5rem] p-8 text-white mb-10 flex flex-col md:flex-row items-center justify-between shadow-xl">
           <div>
-            <h1 className="text-4xl font-black mb-2 italic">Hungry?</h1>
+            <h1 className="text-4xl md:text-5xl font-black mb-2 italic">
+              Hungry?
+            </h1>
             <p className="text-lg opacity-90">
               Order now and get 20% cashback!
             </p>
           </div>
-          <div className="hidden md:block bg-white/20 p-4 rounded-full">
+          <div className="hidden md:block bg-white/20 p-5 rounded-full animate-bounce">
             <Flame size={60} />
           </div>
         </div>
 
-        {/* Food Grid */}
-        <h2 className="text-2xl font-bold mb-6 text-gray-800">
-          Popular Dishes
-        </h2>
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 pb-20">
+        {/* Popular Dishes Header */}
+        <div className="flex justify-between items-center mb-6">
+          <h2 className="text-2xl md:text-3xl font-black text-gray-800">
+            Popular Dishes
+          </h2>
+          <Link
+            to="/menus"
+            className="flex items-center gap-1 text-orange-600 font-bold hover:underline">
+            View All <ArrowRight size={18} />
+          </Link>
+        </div>
+
+        {/* Grid Section */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mb-16">
           {filteredFoods.map((food) => (
             <div
               key={food.id}
-              className="bg-white rounded-3xl p-4 shadow-sm border border-gray-100 hover:shadow-xl transition-all">
-              <img
-                src={food.img}
-                className="w-full h-40 object-cover rounded-2xl mb-4"
-                alt={food.name}
-              />
-              <h3 className="font-bold text-gray-900">{food.name}</h3>
+              onClick={() => {
+                setSelectedItem(food);
+                setCurrentImgIndex(0);
+              }}
+              className="group bg-white rounded-[2.5rem] p-4 shadow-sm border border-gray-100 cursor-pointer hover:shadow-xl transition-all">
+              <div className="overflow-hidden rounded-[1.8rem] mb-4 h-44">
+                <img
+                  src={food.images[0]}
+                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                  alt={food.name}
+                />
+              </div>
+              <h3 className="font-bold text-gray-900 text-lg">{food.name}</h3>
               <div className="flex justify-between items-center mt-4">
-                <span className="text-xl font-black">₹{food.price}</span>
+                <span className="text-2xl font-black text-gray-900">
+                  ₹{food.price}
+                </span>
                 <button
-                  onClick={() => addToCart(food)}
-                  className="bg-orange-500 text-white p-2 rounded-xl">
-                  <Plus size={20} />
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleAdd(food);
+                  }}
+                  className="bg-orange-500 text-white p-2.5 rounded-xl hover:bg-black transition-all shadow-md active:scale-90">
+                  <Plus size={22} />
                 </button>
               </div>
             </div>
           ))}
         </div>
+
+        {/* Video Banner */}
+        <div className="mb-16">
+          <div className="relative h-[300px] md:h-[400px] w-full rounded-[3rem] overflow-hidden shadow-2xl">
+            <video
+              autoPlay
+              muted
+              loop
+              playsInline
+              className="absolute inset-0 w-full h-full object-cover">
+              <source
+                src="https://assets.mixkit.co/videos/preview/mixkit-fresh-vegetables-being-sliced-on-a-cutting-board-40545-large.mp4"
+                type="video/mp4"
+              />
+            </video>
+            <div className="absolute inset-0 bg-black/40 flex flex-col items-center justify-center text-center p-6 text-white text-3xl md:text-5xl font-black italic">
+              <Play fill="white" size={40} className="mb-4" />
+              Experience Pure Flavor
+            </div>
+          </div>
+        </div>
+
+        {/* Why Choose Us */}
+        <div className="mb-20 grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="bg-orange-50/60 p-8 rounded-[2.5rem] text-center border border-orange-100 group transition-all">
+            <div className="bg-white w-14 h-14 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:bg-orange-500 group-hover:text-white transition-all">
+              <Truck />
+            </div>
+            <h4 className="text-lg font-bold mb-2">Fast Delivery</h4>
+            <p className="text-gray-500 text-sm">30 mins delivery.</p>
+          </div>
+          <div className="bg-orange-50/60 p-8 rounded-[2.5rem] text-center border border-orange-100 group transition-all">
+            <div className="bg-white w-14 h-14 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:bg-orange-500 group-hover:text-white transition-all">
+              <ShieldCheck />
+            </div>
+            <h4 className="text-lg font-bold mb-2">Safe & Clean</h4>
+            <p className="text-gray-500 text-sm">Best Hygiene.</p>
+          </div>
+          <div className="bg-orange-50/60 p-8 rounded-[2.5rem] text-center border border-orange-100 group transition-all">
+            <div className="bg-white w-14 h-14 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:bg-orange-500 group-hover:text-white transition-all">
+              <Clock />
+            </div>
+            <h4 className="text-lg font-bold mb-2">24/7 Service</h4>
+            <p className="text-gray-500 text-sm">Always ready.</p>
+          </div>
+        </div>
+
+        {/* Split Section */}
+        <div className="pb-24 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+          <div className="relative h-[300px] md:h-[450px]">
+            <img
+              src="https://images.unsplash.com/photo-1565299624946-b28f40a0ae38?w=800"
+              className="w-full h-full object-cover rounded-[3rem] shadow-2xl"
+              alt="Food"
+            />
+            <div className="absolute -bottom-4 -right-4 bg-white p-5 rounded-3xl shadow-xl hidden md:flex items-center gap-3">
+              <CheckCircle2 className="text-green-600" />
+              <p className="font-bold text-gray-800 text-sm">
+                Fresh Ingredients Only
+              </p>
+            </div>
+          </div>
+          <div className="space-y-6">
+            <h2 className="text-5xl md:text-7xl font-black text-gray-900 leading-[1.1] tracking-tighter">
+              We Don't Just Cook, <br />
+              <span className="text-orange-600 italic">
+                We Create Memories.
+              </span>
+            </h2>
+            <p className="text-gray-500 text-xl leading-relaxed">
+              Delicious meals served with love.
+            </p>
+            <Link
+              to="/menus"
+              className="inline-flex items-center gap-2 bg-gray-900 text-white px-10 py-5 rounded-2xl font-black text-lg hover:bg-orange-600 transition-all shadow-lg shadow-gray-200">
+              Check Our Menus <ArrowRight size={22} />
+            </Link>
+          </div>
+        </div>
       </div>
+
+      {/* Popup Modal */}
+      {selectedItem && (
+        <div className="fixed inset-0 z-[200] flex items-center justify-center p-4">
+          <div
+            className="absolute inset-0 bg-black/70 backdrop-blur-sm"
+            onClick={() => setSelectedItem(null)}></div>
+          <div className="relative bg-white w-full max-w-4xl h-auto md:h-[550px] rounded-[3rem] overflow-hidden shadow-2xl flex flex-col md:flex-row animate-in zoom-in duration-300">
+            <button
+              onClick={() => setSelectedItem(null)}
+              className="absolute top-6 right-6 z-[220] p-2 bg-white text-gray-900 rounded-full shadow-xl hover:bg-orange-600 transition-all">
+              <X size={24} />
+            </button>
+            <div className="relative h-64 md:h-full md:w-1/2 bg-gray-100 group shrink-0">
+              <img
+                src={selectedItem.images[currentImgIndex]}
+                className="w-full h-full object-cover"
+                alt=""
+              />
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setCurrentImgIndex((prev) =>
+                    prev === 0 ? selectedItem.images.length - 1 : prev - 1,
+                  );
+                }}
+                className="absolute left-4 top-1/2 -translate-y-1/2 p-2 bg-white/50 rounded-full hover:bg-white transition-all">
+                <ChevronLeft />
+              </button>
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setCurrentImgIndex(
+                    (prev) => (prev + 1) % selectedItem.images.length,
+                  );
+                }}
+                className="absolute right-4 top-1/2 -translate-y-1/2 p-2 bg-white/50 rounded-full hover:bg-white transition-all">
+                <ChevronRight />
+              </button>
+            </div>
+            <div className="p-8 md:p-12 md:w-1/2 flex flex-col justify-between">
+              <div>
+                <h2 className="text-3xl md:text-4xl font-black text-gray-900 mb-4">
+                  {selectedItem.name}
+                </h2>
+                <p className="text-gray-500 text-lg mb-6 italic">
+                  "{selectedItem.description}"
+                </p>
+              </div>
+              <div className="flex items-center justify-between border-t pt-6">
+                <span className="text-3xl font-black text-gray-900">
+                  ₹{selectedItem.price}
+                </span>
+                <button
+                  onClick={() => {
+                    handleAdd(selectedItem);
+                    setSelectedItem(null);
+                  }}
+                  className="bg-orange-600 text-white px-8 py-4 rounded-2xl font-black hover:bg-black transition-all shadow-lg flex items-center gap-2">
+                  <ShoppingCart size={20} /> ORDER NOW
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

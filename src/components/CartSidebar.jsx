@@ -5,9 +5,8 @@ import { useNavigate } from "react-router-dom";
 const CartSidebar = ({ isOpen, onClose, cartItems, removeFromCart }) => {
   const navigate = useNavigate();
 
-  // Total calculate (String se number bana kar)
   const total = cartItems.reduce(
-    (acc, item) => acc + parseInt(item.price.replace("₹", "")),
+    (acc, item) => acc + parseInt(item.price.replace("₹", "") || 0),
     0,
   );
 
@@ -55,15 +54,20 @@ const CartSidebar = ({ isOpen, onClose, cartItems, removeFromCart }) => {
               {cartItems.map((item) => (
                 <div
                   key={item.cartId}
-                  className="flex items-center gap-4 bg-white p-3 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition">
-                  <span className="text-4xl">{item.img}</span>
+                  className="flex items-center gap-4 bg-white p-3 rounded-2xl border border-gray-100 shadow-sm">
+                  {/* FIX: Yahan span ki jagah img tag laga diya hai */}
+                  <img
+                    src={item.img}
+                    alt={item.name}
+                    className="w-16 h-16 object-cover rounded-xl"
+                  />
                   <div className="flex-1">
                     <h4 className="font-bold text-gray-800">{item.name}</h4>
                     <p className="text-orange-600 font-bold">{item.price}</p>
                   </div>
                   <button
                     onClick={() => removeFromCart(item.cartId)}
-                    className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition">
+                    className="p-2 text-gray-400 hover:text-red-500 transition">
                     <Trash2 size={20} />
                   </button>
                 </div>
@@ -84,7 +88,7 @@ const CartSidebar = ({ isOpen, onClose, cartItems, removeFromCart }) => {
             </div>
             <button
               onClick={handleCheckout}
-              className="w-full bg-orange-500 text-white font-bold py-4 rounded-2xl hover:bg-orange-600 transition-all flex items-center justify-center gap-2 shadow-lg uppercase tracking-wider">
+              className="w-full bg-orange-500 text-white font-bold py-4 rounded-2xl hover:bg-orange-600 transition-all flex items-center justify-center gap-2 shadow-lg">
               Go to Checkout <ArrowRight size={20} />
             </button>
           </div>

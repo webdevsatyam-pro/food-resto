@@ -5,7 +5,7 @@ import BottomNav from "./components/BottomNav";
 import CartSidebar from "./components/CartSidebar";
 
 // Pages
-import Home from "./pages/Home"; // <--- Ye aapka naya Home page hai
+import Home from "./pages/Home";
 import Menus from "./pages/Menus";
 import Checkout from "./pages/Checkout";
 import Offers from "./pages/Offers";
@@ -16,12 +16,16 @@ function App() {
   const [cartItems, setCartItems] = useState([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
 
+  // App.jsx ke andar addToCart function:
   const addToCart = (product) => {
     const newItem = {
       ...product,
       cartId: Date.now(),
+      // Price hamesha ₹ ke saath string honi chahiye jaisa CartSidebar ko chahiye
       price:
-        typeof product.price === "string" ? product.price : `₹${product.price}`,
+        typeof product.price === "string" && product.price.includes("₹")
+          ? product.price
+          : `₹${product.price}`,
     };
     setCartItems([...cartItems, newItem]);
   };
@@ -52,8 +56,8 @@ function App() {
       />
 
       <Routes>
-        {/* Home Page Route */}
-        <Route path="/" element={<Home />} />
+        {/* FIX: Yahan addToCart={addToCart} pass kar diya hai */}
+        <Route path="/" element={<Home addToCart={addToCart} />} />
 
         {/* Menus Page Route */}
         <Route path="/menus" element={<Menus onAddToCart={addToCart} />} />
