@@ -179,13 +179,10 @@ const Home = ({ searchTerm = "", addToCart }) => {
               loop
               playsInline
               className="absolute inset-0 w-full h-full object-cover">
-              <source
-                src="https://assets.mixkit.co/videos/preview/mixkit-fresh-vegetables-being-sliced-on-a-cutting-board-40545-large.mp4"
-                type="video/mp4"
-              />
+              <source src="./Zomato.mp4" type="video/mp4" />
             </video>
             <div className="absolute inset-0 bg-black/40 flex flex-col items-center justify-center text-center p-6 text-white text-3xl md:text-5xl font-black italic">
-              <Play fill="white" size={40} className="mb-4" />
+              {/* <Play fill="white" size={40} className="mb-4" /> */}
               Experience Pure Flavor
             </div>
           </div>

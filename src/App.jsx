@@ -13,6 +13,8 @@ import Offers from "./pages/Offers";
 import Login from "./Auth/Login";
 import Signup from "./Auth/Signup";
 import ScrollToTop from "./components/ScrollToTop";
+import FloatingCall from "./components/FloatingCall";
+import About from "./pages/About";
 
 function App() {
   const [cartItems, setCartItems] = useState([]);
@@ -75,14 +77,7 @@ function App() {
         />
 
         {/* Placeholder Routes */}
-        <Route
-          path="/about"
-          element={
-            <div className="p-20 text-center text-2xl font-bold">
-              About Us Section
-            </div>
-          }
-        />
+        <Route path="/about" element={<About />} />
         <Route
           path="/contact"
           element={
@@ -94,6 +89,8 @@ function App() {
       </Routes>
 
       <Footer />
+
+      <FloatingCall />
     </div>
   );
 }
