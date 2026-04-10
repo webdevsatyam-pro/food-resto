@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
   Star,
   Plus,
+  Minus,
   Flame,
   Play,
   ArrowRight,
@@ -16,9 +17,24 @@ import {
   CheckCircle2,
 } from "lucide-react";
 
-const Home = ({ searchTerm = "", addToCart }) => {
+const Home = ({ searchTerm = "", addToCart, buyNow }) => {
+  const navigate = useNavigate();
   const [selectedItem, setSelectedItem] = useState(null);
   const [currentImgIndex, setCurrentImgIndex] = useState(0);
+  const [quantity, setQuantity] = useState(1);
+
+  // --- Background Scroll Lock Logic ---
+  useEffect(() => {
+    if (selectedItem) {
+      document.body.style.overflow = "hidden"; // Scroll band jab popup khula ho
+    } else {
+      document.body.style.overflow = "unset"; // Scroll chalu jab popup band ho
+    }
+    // Cleanup function
+    return () => {
+      document.body.style.overflow = "unset";
+    };
+  }, [selectedItem]);
 
   const foodItems = [
     {
@@ -61,7 +77,7 @@ const Home = ({ searchTerm = "", addToCart }) => {
         "https://images.unsplash.com/photo-1571407970349-bc81e7e96d47?w=800",
       ],
       description:
-        "Freshly baked dough topped with premium mozzarella and fresh basil leaves.",
+        "Freshly baked thin-crust dough topped with premium mozzarella cheese.",
     },
     {
       id: 4,
@@ -75,10 +91,11 @@ const Home = ({ searchTerm = "", addToCart }) => {
         "https://images.unsplash.com/photo-1666024276184-48f059b56326?w=800",
       ],
       description:
-        "Marinated cottage cheese cubes grilled with onions and bell peppers.",
+        "Soft cubes of paneer marinated in spicy yogurt and grilled to perfection.",
     },
   ];
 
+  // Auto-scroll logic for slider
   useEffect(() => {
     let timer;
     if (selectedItem) {
@@ -93,49 +110,57 @@ const Home = ({ searchTerm = "", addToCart }) => {
     f.name.toLowerCase().includes(searchTerm.toLowerCase()),
   );
 
-  // Home.jsx ke andar handleAdd function ko bas check kar lein:
-  const handleAdd = (item) => {
+  const handleAddDirect = (item) => {
     if (typeof addToCart === "function") {
-      // Hamari cart logic 'img' key me photo mangti hai
-      const productToAdd = {
-        ...item,
-        img: item.images ? item.images[0] : item.img,
-      };
+      const productToAdd = { ...item, img: item.images[0] };
       addToCart(productToAdd);
     }
   };
 
+  const handleOrderNow = (item) => {
+    if (typeof buyNow === "function") {
+      const productToBuy = {
+        ...item,
+        img: item.images[0],
+        price: item.price * quantity,
+        name: quantity > 1 ? `${item.name} (x${quantity})` : item.name,
+      };
+      buyNow(productToBuy);
+      setSelectedItem(null);
+      navigate("/checkout");
+    }
+  };
+
   return (
-    <div className="w-full bg-[#FBFBFB] pt-6">
-      <div className="max-w-7xl mx-auto px-4">
-        {/* Banner */}
+    <div className="w-full bg-[#FBFBFB] pt-6 pb-10">
+      <div className="max-w-7xl mx-auto px-4 text-gray-900">
+        {/* 1. Banner */}
         <div className="bg-orange-500 rounded-[2.5rem] p-8 text-white mb-10 flex flex-col md:flex-row items-center justify-between shadow-xl">
           <div>
             <h1 className="text-4xl md:text-5xl font-black mb-2 italic">
               Hungry?
             </h1>
-            <p className="text-lg opacity-90">
+            <p className="text-lg opacity-90 font-medium">
               Order now and get 20% cashback!
             </p>
           </div>
-          <div className="hidden md:block bg-white/20 p-5 rounded-full animate-bounce">
+          <div className="hidden md:block bg-white/20 p-5 rounded-full animate-bounce text-white">
             <Flame size={60} />
           </div>
         </div>
 
-        {/* Popular Dishes Header */}
+        {/* 2. Popular Dishes */}
         <div className="flex justify-between items-center mb-6">
-          <h2 className="text-2xl md:text-3xl font-black text-gray-800">
+          <h2 className="text-2xl md:text-3xl font-black tracking-tight">
             Popular Dishes
           </h2>
           <Link
             to="/menus"
-            className="flex items-center gap-1 text-orange-600 font-bold hover:underline">
+            className="flex items-center gap-1 text-orange-600 font-bold hover:underline text-sm uppercase font-sans tracking-tighter">
             View All <ArrowRight size={18} />
           </Link>
         </div>
 
-        {/* Grid Section */}
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mb-16">
           {filteredFoods.map((food) => (
             <div
@@ -143,6 +168,7 @@ const Home = ({ searchTerm = "", addToCart }) => {
               onClick={() => {
                 setSelectedItem(food);
                 setCurrentImgIndex(0);
+                setQuantity(1);
               }}
               className="group bg-white rounded-[2.5rem] p-4 shadow-sm border border-gray-100 cursor-pointer hover:shadow-xl transition-all">
               <div className="overflow-hidden rounded-[1.8rem] mb-4 h-44">
@@ -152,17 +178,17 @@ const Home = ({ searchTerm = "", addToCart }) => {
                   alt={food.name}
                 />
               </div>
-              <h3 className="font-bold text-gray-900 text-lg">{food.name}</h3>
+              <h3 className="font-bold text-lg">{food.name}</h3>
               <div className="flex justify-between items-center mt-4">
-                <span className="text-2xl font-black text-gray-900">
+                <span className="text-2xl font-black font-sans text-gray-900">
                   ₹{food.price}
                 </span>
                 <button
                   onClick={(e) => {
                     e.stopPropagation();
-                    handleAdd(food);
+                    handleAddDirect(food);
                   }}
-                  className="bg-orange-500 text-white p-2.5 rounded-xl hover:bg-black transition-all shadow-md active:scale-90">
+                  className="bg-orange-500 text-white p-2.5 rounded-xl hover:bg-black active:scale-90 transition-all shadow-md">
                   <Plus size={22} />
                 </button>
               </div>
@@ -170,8 +196,8 @@ const Home = ({ searchTerm = "", addToCart }) => {
           ))}
         </div>
 
-        {/* Video Banner */}
-        <div className="mb-16">
+        {/* 3. Video Banner */}
+        <div className="mb-16 text-center">
           <div className="relative h-[300px] md:h-[400px] w-full rounded-[3rem] overflow-hidden shadow-2xl">
             <video
               autoPlay
@@ -181,39 +207,39 @@ const Home = ({ searchTerm = "", addToCart }) => {
               className="absolute inset-0 w-full h-full object-cover">
               <source src="./Zomato.mp4" type="video/mp4" />
             </video>
-            <div className="absolute inset-0 bg-black/40 flex flex-col items-center justify-center text-center p-6 text-white text-3xl md:text-5xl font-black italic">
-              {/* <Play fill="white" size={40} className="mb-4" /> */}
-              Experience Pure Flavor
+            <div className="absolute inset-0 bg-black/40 flex flex-col items-center justify-center text-center p-6 text-white text-3xl md:text-5xl font-black italic tracking-tighter uppercase leading-none">
+              Experience{" "}
+              <span className="text-orange-500 ml-2">Pure Flavor</span>
             </div>
           </div>
         </div>
 
-        {/* Why Choose Us */}
+        {/* 4. Why Choose Us */}
         <div className="mb-20 grid grid-cols-1 md:grid-cols-3 gap-6">
           <div className="bg-orange-50/60 p-8 rounded-[2.5rem] text-center border border-orange-100 group transition-all">
-            <div className="bg-white w-14 h-14 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:bg-orange-500 group-hover:text-white transition-all">
+            <div className="bg-white w-14 h-14 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:bg-orange-500 group-hover:text-white transition-all shadow-sm">
               <Truck />
             </div>
-            <h4 className="text-lg font-bold mb-2">Fast Delivery</h4>
+            <h4 className="text-lg font-black mb-2">Fast Delivery</h4>
             <p className="text-gray-500 text-sm">30 mins delivery.</p>
           </div>
           <div className="bg-orange-50/60 p-8 rounded-[2.5rem] text-center border border-orange-100 group transition-all">
-            <div className="bg-white w-14 h-14 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:bg-orange-500 group-hover:text-white transition-all">
+            <div className="bg-white w-14 h-14 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:bg-orange-500 group-hover:text-white transition-all shadow-sm">
               <ShieldCheck />
             </div>
-            <h4 className="text-lg font-bold mb-2">Safe & Clean</h4>
+            <h4 className="text-lg font-black mb-2">Safe & Clean</h4>
             <p className="text-gray-500 text-sm">Best Hygiene.</p>
           </div>
           <div className="bg-orange-50/60 p-8 rounded-[2.5rem] text-center border border-orange-100 group transition-all">
-            <div className="bg-white w-14 h-14 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:bg-orange-500 group-hover:text-white transition-all">
+            <div className="bg-white w-14 h-14 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:bg-orange-500 group-hover:text-white transition-all shadow-sm">
               <Clock />
             </div>
-            <h4 className="text-lg font-bold mb-2">24/7 Service</h4>
+            <h4 className="text-lg font-black mb-2">24/7 Service</h4>
             <p className="text-gray-500 text-sm">Always ready.</p>
           </div>
         </div>
 
-        {/* Split Section */}
+        {/* 5. Split Section */}
         <div className="pb-24 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
           <div className="relative h-[300px] md:h-[450px]">
             <img
@@ -229,7 +255,7 @@ const Home = ({ searchTerm = "", addToCart }) => {
             </div>
           </div>
           <div className="space-y-6">
-            <h2 className="text-5xl md:text-7xl font-black text-gray-900 leading-[1.1] tracking-tighter">
+            <h2 className="text-5xl md:text-7xl font-black leading-[1.1] tracking-tighter">
               We Don't Just Cook, <br />
               <span className="text-orange-600 italic">
                 We Create Memories.
@@ -247,7 +273,7 @@ const Home = ({ searchTerm = "", addToCart }) => {
         </div>
       </div>
 
-      {/* Popup Modal */}
+      {/* --- POPUP MODAL --- */}
       {selectedItem && (
         <div className="fixed inset-0 z-[200] flex items-center justify-center p-4">
           <div
@@ -256,56 +282,100 @@ const Home = ({ searchTerm = "", addToCart }) => {
           <div className="relative bg-white w-full max-w-4xl h-auto md:h-[550px] rounded-[3rem] overflow-hidden shadow-2xl flex flex-col md:flex-row animate-in zoom-in duration-300">
             <button
               onClick={() => setSelectedItem(null)}
-              className="absolute top-6 right-6 z-[220] p-2 bg-white text-gray-900 rounded-full shadow-xl hover:bg-orange-600 transition-all">
+              className="absolute top-6 right-6 z-[220] p-2 bg-white text-gray-900 rounded-full shadow-xl hover:bg-orange-600 hover:text-white transition-all">
               <X size={24} />
             </button>
+
             <div className="relative h-64 md:h-full md:w-1/2 bg-gray-100 group shrink-0">
               <img
                 src={selectedItem.images[currentImgIndex]}
-                className="w-full h-full object-cover"
+                className="w-full h-full object-cover transition-opacity duration-500"
                 alt=""
               />
               <button
                 onClick={(e) => {
                   e.stopPropagation();
-                  setCurrentImgIndex((prev) =>
-                    prev === 0 ? selectedItem.images.length - 1 : prev - 1,
+                  setCurrentImgIndex((p) =>
+                    p === 0 ? selectedItem.images.length - 1 : p - 1,
                   );
                 }}
-                className="absolute left-4 top-1/2 -translate-y-1/2 p-2 bg-white/50 rounded-full hover:bg-white transition-all">
+                className="absolute left-4 top-1/2 -translate-y-1/2 p-2 bg-white/50 rounded-full hover:bg-white text-gray-800 transition-all font-bold">
                 <ChevronLeft />
               </button>
               <button
                 onClick={(e) => {
                   e.stopPropagation();
                   setCurrentImgIndex(
-                    (prev) => (prev + 1) % selectedItem.images.length,
+                    (p) => (p + 1) % selectedItem.images.length,
                   );
                 }}
-                className="absolute right-4 top-1/2 -translate-y-1/2 p-2 bg-white/50 rounded-full hover:bg-white transition-all">
+                className="absolute right-4 top-1/2 -translate-y-1/2 p-2 bg-white/50 rounded-full hover:bg-white text-gray-800 transition-all font-bold">
                 <ChevronRight />
               </button>
+              <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2">
+                {selectedItem.images.map((_, i) => (
+                  <div
+                    key={i}
+                    className={`h-1.5 rounded-full transition-all ${i === currentImgIndex ? "w-6 bg-orange-500" : "w-1.5 bg-white/80"}`}
+                  />
+                ))}
+              </div>
             </div>
-            <div className="p-8 md:p-12 md:w-1/2 flex flex-col justify-between">
+
+            <div className="p-8 md:p-12 md:w-1/2 flex flex-col justify-between overflow-hidden">
               <div>
-                <h2 className="text-3xl md:text-4xl font-black text-gray-900 mb-4">
+                <h2 className="text-3xl md:text-4xl font-black tracking-tighter leading-none">
                   {selectedItem.name}
                 </h2>
-                <p className="text-gray-500 text-lg mb-6 italic">
+                <div className="flex items-center gap-4 my-4 font-sans">
+                  <span className="flex items-center gap-1 bg-orange-50 text-orange-600 px-3 py-1 rounded-lg font-bold">
+                    <Star fill="currentColor" size={16} /> {selectedItem.rating}
+                  </span>
+                  <span className="text-gray-400 font-bold font-sans">
+                    <Clock size={16} className="inline mr-1" />{" "}
+                    {selectedItem.time}
+                  </span>
+                </div>
+                <p className="text-gray-500 text-lg mb-6 italic leading-snug">
                   "{selectedItem.description}"
                 </p>
+
+                {/* QUANTITY SELECTOR */}
+                <div className="flex flex-col gap-2 mb-6">
+                  <p className="text-xs font-black uppercase text-gray-400 tracking-widest font-sans">
+                    Select Quantity
+                  </p>
+                  <div className="flex items-center gap-6 bg-gray-50 w-fit p-2 rounded-2xl border border-gray-100 text-gray-800">
+                    <button
+                      onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                      className="w-10 h-10 bg-white rounded-xl shadow-sm hover:bg-orange-500 hover:text-white transition-all active:scale-90 flex items-center justify-center font-sans">
+                      <Minus size={18} />
+                    </button>
+                    <span className="text-xl font-black font-sans">
+                      {quantity}
+                    </span>
+                    <button
+                      onClick={() => setQuantity(quantity + 1)}
+                      className="w-10 h-10 bg-white rounded-xl shadow-sm hover:bg-orange-500 hover:text-white transition-all active:scale-90 flex items-center justify-center font-sans">
+                      <Plus size={18} />
+                    </button>
+                  </div>
+                </div>
               </div>
+
               <div className="flex items-center justify-between border-t pt-6">
-                <span className="text-3xl font-black text-gray-900">
-                  ₹{selectedItem.price}
-                </span>
+                <div>
+                  <p className="text-gray-400 text-xs font-bold uppercase font-sans tracking-tighter">
+                    Total Price
+                  </p>
+                  <span className="text-3xl font-black font-sans">
+                    ₹{selectedItem.price * quantity}
+                  </span>
+                </div>
                 <button
-                  onClick={() => {
-                    handleAdd(selectedItem);
-                    setSelectedItem(null);
-                  }}
-                  className="bg-orange-600 text-white px-8 py-4 rounded-2xl font-black hover:bg-black transition-all shadow-lg flex items-center gap-2">
-                  <ShoppingCart size={20} /> ORDER NOW
+                  onClick={() => handleOrderNow(selectedItem)}
+                  className="bg-orange-600 text-white px-8 py-4 rounded-2xl font-black hover:bg-black transition-all shadow-lg flex items-center gap-2 active:scale-95 uppercase text-sm tracking-widest">
+                  <ShoppingCart size={20} /> Order Now
                 </button>
               </div>
             </div>

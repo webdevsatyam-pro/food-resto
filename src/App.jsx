@@ -3,7 +3,7 @@ import { Routes, Route } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import BottomNav from "./components/BottomNav";
 import CartSidebar from "./components/CartSidebar";
-import Footer from "./components/Footer"; // <--- Footer Import kiya
+import Footer from "./components/Footer";
 
 // Pages
 import Home from "./pages/Home";
@@ -15,23 +15,36 @@ import Signup from "./Auth/Signup";
 import ScrollToTop from "./components/ScrollToTop";
 import FloatingCall from "./components/FloatingCall";
 import About from "./pages/About";
+import ContactUs from "./pages/Contact";
 
 function App() {
   const [cartItems, setCartItems] = useState([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
 
-  // App.jsx ke andar addToCart function:
+  // 1. Normal Add to Cart (Pehele se jo hai usme add karega)
   const addToCart = (product) => {
     const newItem = {
       ...product,
       cartId: Date.now(),
-      // Price hamesha ₹ ke saath string honi chahiye jaisa CartSidebar ko chahiye
       price:
         typeof product.price === "string" && product.price.includes("₹")
           ? product.price
           : `₹${product.price}`,
     };
     setCartItems([...cartItems, newItem]);
+  };
+
+  // 2. BUY NOW Logic (Purana cart khali karke sirf naya item rakhega)
+  const buyNow = (product) => {
+    const newItem = {
+      ...product,
+      cartId: Date.now(),
+      price:
+        typeof product.price === "string" && product.price.includes("₹")
+          ? product.price
+          : `₹${product.price}`,
+    };
+    setCartItems([newItem]); // Array reset with single item
   };
 
   const removeFromCart = (cartId) => {
@@ -43,6 +56,7 @@ function App() {
   return (
     <div className="pb-20 md:pb-0 font-sans">
       <ScrollToTop />
+
       <Navbar
         cartCount={cartItems.length}
         onCartClick={() => setIsCartOpen(true)}
@@ -61,14 +75,22 @@ function App() {
       />
 
       <Routes>
-        {/* Home Page Route */}
-        <Route path="/" element={<Home addToCart={addToCart} />} />
+        {/* Home Route: buyNow function pass kiya gaya hai */}
+        <Route
+          path="/"
+          element={<Home addToCart={addToCart} buyNow={buyNow} />}
+        />
 
-        {/* Menus Page Route */}
-        <Route path="/menus" element={<Menus onAddToCart={addToCart} />} />
+        {/* <Route path="/menus" element={<Menus onAddToCart={addToCart} />} /> */}
+        <Route
+          path="/menus"
+          element={<Menus onAddToCart={addToCart} buyNow={buyNow} />}
+        />
 
         <Route path="/offers" element={<Offers />} />
+
         <Route path="/login" element={<Login />} />
+
         <Route path="/signup" element={<Signup />} />
 
         <Route
@@ -76,16 +98,9 @@ function App() {
           element={<Checkout cartItems={cartItems} clearCart={clearCart} />}
         />
 
-        {/* Placeholder Routes */}
         <Route path="/about" element={<About />} />
-        <Route
-          path="/contact"
-          element={
-            <div className="p-20 text-center text-2xl font-bold">
-              Contact Us Section
-            </div>
-          }
-        />
+
+        <Route path="/contact" element={<ContactUs />} />
       </Routes>
 
       <Footer />

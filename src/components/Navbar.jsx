@@ -31,6 +31,18 @@ const Navbar = ({ cartCount, onCartClick }) => {
         {/* 2. LAPTOP ONLY: Center Links */}
         <div className="hidden md:flex items-center gap-8 font-bold text-gray-700">
           <NavLink
+            to="/"
+            className={({ isActive }) =>
+              `hover:text-orange-600 transition relative after:absolute after:bottom-0 after:left-0 after:right-0 after:h-0.5 after:rounded-t after:bg-orange-600 after:transition-transform after:duration-300 after:origin-center ${
+                isActive
+                  ? "text-orange-600 after:scale-x-100"
+                  : "after:scale-x-0"
+              }`
+            }>
+            Home
+          </NavLink>
+
+          <NavLink
             to="/menus"
             className={({ isActive }) =>
               `hover:text-orange-600 transition relative after:absolute after:bottom-0 after:left-0 after:right-0 after:h-0.5 after:rounded-t after:bg-orange-600 after:transition-transform after:duration-300 after:origin-center ${
