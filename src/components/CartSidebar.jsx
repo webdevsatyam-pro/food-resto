@@ -14,7 +14,8 @@ const CartSidebar = ({ isOpen, onClose, cartItems, removeFromCart }) => {
   const handleItemClick = (item) => {
     onClose(); // Sidebar band karein
     // Menus page pe bhejein aur state mein ID pass karein
-    navigate("/menus", { state: { openDishId: item.id } });
+    (navigate("/menus", { state: { openDishId: item.id } }),
+      navigate("/", { state: { openDishId: item.id } }));
   };
 
   const handleCheckout = () => {

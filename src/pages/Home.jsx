@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useLocation } from "react-router-dom"; // useLocation add kiya
 import {
   Star,
   Plus,
@@ -19,6 +19,7 @@ import {
 
 const Home = ({ searchTerm = "", addToCart, buyNow }) => {
   const navigate = useNavigate();
+  const location = useLocation(); // URL state check karne ke liye
   const [selectedItem, setSelectedItem] = useState(null);
   const [currentImgIndex, setCurrentImgIndex] = useState(0);
   const [quantity, setQuantity] = useState(1);
@@ -26,11 +27,10 @@ const Home = ({ searchTerm = "", addToCart, buyNow }) => {
   // --- Background Scroll Lock Logic ---
   useEffect(() => {
     if (selectedItem) {
-      document.body.style.overflow = "hidden"; // Scroll band jab popup khula ho
+      document.body.style.overflow = "hidden";
     } else {
-      document.body.style.overflow = "unset"; // Scroll chalu jab popup band ho
+      document.body.style.overflow = "unset";
     }
-    // Cleanup function
     return () => {
       document.body.style.overflow = "unset";
     };
@@ -95,6 +95,21 @@ const Home = ({ searchTerm = "", addToCart, buyNow }) => {
     },
   ];
 
+  // --- AUTO-OPEN POPUP LOGIC (Naya Logic) ---
+  useEffect(() => {
+    // Agar CartSidebar se koi state (Dish ID) bheji gayi hai
+    if (location.state && location.state.openDishId) {
+      const dishId = location.state.openDishId;
+      const dishToOpen = foodItems.find((f) => f.id === dishId);
+
+      if (dishToOpen) {
+        setSelectedItem(dishToOpen); // Popup kholo
+        setQuantity(1); // Quantity reset karo
+        setCurrentImgIndex(0); // Pehli photo dikhao
+      }
+    }
+  }, [location.state]); // Jab bhi page change ho ya state mile, check karein
+
   // Auto-scroll logic for slider
   useEffect(() => {
     let timer;
@@ -137,10 +152,10 @@ const Home = ({ searchTerm = "", addToCart, buyNow }) => {
         {/* 1. Banner */}
         <div className="bg-orange-500 rounded-[2.5rem] p-8 text-white mb-10 flex flex-col md:flex-row items-center justify-between shadow-xl">
           <div>
-            <h1 className="text-4xl md:text-5xl font-black mb-2 italic">
+            <h1 className="text-4xl md:text-5xl font-black mb-2 italic text-white">
               Hungry?
             </h1>
-            <p className="text-lg opacity-90 font-medium">
+            <p className="text-lg opacity-90 font-medium text-white">
               Order now and get 20% cashback!
             </p>
           </div>
@@ -178,7 +193,7 @@ const Home = ({ searchTerm = "", addToCart, buyNow }) => {
                   alt={food.name}
                 />
               </div>
-              <h3 className="font-bold text-lg">{food.name}</h3>
+              <h3 className="font-bold text-lg text-gray-900">{food.name}</h3>
               <div className="flex justify-between items-center mt-4">
                 <span className="text-2xl font-black font-sans text-gray-900">
                   ₹{food.price}
@@ -215,27 +230,33 @@ const Home = ({ searchTerm = "", addToCart, buyNow }) => {
         </div>
 
         {/* 4. Why Choose Us */}
-        <div className="mb-20 grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div className="mb-20 grid grid-cols-1 md:grid-cols-3 gap-6 font-sans">
           <div className="bg-orange-50/60 p-8 rounded-[2.5rem] text-center border border-orange-100 group transition-all">
-            <div className="bg-white w-14 h-14 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:bg-orange-500 group-hover:text-white transition-all shadow-sm">
+            <div className="bg-orange-500 text-white w-14 h-14 rounded-2xl flex items-center justify-center mx-auto mb-4 transition-all shadow-sm md:bg-white md:text-black md:group-hover:bg-orange-500 md:group-hover:text-white">
               <Truck />
             </div>
-            <h4 className="text-lg font-black mb-2">Fast Delivery</h4>
-            <p className="text-gray-500 text-sm">30 mins delivery.</p>
+            <h4 className="text-lg font-black mb-2 text-gray-800">
+              Fast Delivery
+            </h4>
+            <p className="text-gray-500 text-sm font-bold">30 mins delivery.</p>
           </div>
           <div className="bg-orange-50/60 p-8 rounded-[2.5rem] text-center border border-orange-100 group transition-all">
-            <div className="bg-white w-14 h-14 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:bg-orange-500 group-hover:text-white transition-all shadow-sm">
+            <div className="bg-orange-500 text-white w-14 h-14 rounded-2xl flex items-center justify-center mx-auto mb-4 transition-all shadow-sm md:bg-white md:text-black md:group-hover:bg-orange-500 md:group-hover:text-white">
               <ShieldCheck />
             </div>
-            <h4 className="text-lg font-black mb-2">Safe & Clean</h4>
-            <p className="text-gray-500 text-sm">Best Hygiene.</p>
+            <h4 className="text-lg font-black mb-2 text-gray-800">
+              Safe & Clean
+            </h4>
+            <p className="text-gray-500 text-sm font-bold">Best Hygiene.</p>
           </div>
           <div className="bg-orange-50/60 p-8 rounded-[2.5rem] text-center border border-orange-100 group transition-all">
-            <div className="bg-white w-14 h-14 rounded-2xl flex items-center justify-center mx-auto mb-4 group-hover:bg-orange-500 group-hover:text-white transition-all shadow-sm">
+            <div className="bg-orange-500 text-white w-14 h-14 rounded-2xl flex items-center justify-center mx-auto mb-4 transition-all shadow-sm md:bg-white md:text-black md:group-hover:bg-orange-500 md:group-hover:text-white">
               <Clock />
             </div>
-            <h4 className="text-lg font-black mb-2">24/7 Service</h4>
-            <p className="text-gray-500 text-sm">Always ready.</p>
+            <h4 className="text-lg font-black mb-2 text-gray-800">
+              24/7 Service
+            </h4>
+            <p className="text-gray-500 text-sm font-bold">Always ready.</p>
           </div>
         </div>
 
@@ -254,10 +275,10 @@ const Home = ({ searchTerm = "", addToCart, buyNow }) => {
               </p>
             </div>
           </div>
-          <div className="space-y-6">
+          <div className="space-y-6 text-gray-900">
             <h2 className="text-5xl md:text-7xl font-black leading-[1.1] tracking-tighter">
               We Don't Just Cook, <br />
-              <span className="text-orange-600 italic">
+              <span className="text-orange-600 italic font-black">
                 We Create Memories.
               </span>
             </h2>
@@ -322,18 +343,17 @@ const Home = ({ searchTerm = "", addToCart, buyNow }) => {
               </div>
             </div>
 
-            <div className="p-8 md:p-12 md:w-1/2 flex flex-col justify-between overflow-hidden">
+            <div className="p-8 md:p-12 md:w-1/2 flex flex-col justify-between overflow-hidden text-gray-900">
               <div>
-                <h2 className="text-3xl md:text-4xl font-black tracking-tighter leading-none">
+                <h2 className="text-3xl md:text-4xl font-black tracking-tighter leading-none text-gray-900 mb-2">
                   {selectedItem.name}
                 </h2>
-                <div className="flex items-center gap-4 my-4 font-sans">
-                  <span className="flex items-center gap-1 bg-orange-50 text-orange-600 px-3 py-1 rounded-lg font-bold">
+                <div className="flex items-center gap-4 my-4 font-sans font-bold">
+                  <span className="flex items-center gap-1 bg-orange-50 text-orange-600 px-3 py-1 rounded-lg font-black">
                     <Star fill="currentColor" size={16} /> {selectedItem.rating}
                   </span>
-                  <span className="text-gray-400 font-bold font-sans">
-                    <Clock size={16} className="inline mr-1" />{" "}
-                    {selectedItem.time}
+                  <span className="text-gray-400 font-bold font-sans flex items-center gap-1">
+                    <Clock size={16} /> {selectedItem.time}
                   </span>
                 </div>
                 <p className="text-gray-500 text-lg mb-6 italic leading-snug">
@@ -348,15 +368,15 @@ const Home = ({ searchTerm = "", addToCart, buyNow }) => {
                   <div className="flex items-center gap-6 bg-gray-50 w-fit p-2 rounded-2xl border border-gray-100 text-gray-800">
                     <button
                       onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                      className="w-10 h-10 bg-white rounded-xl shadow-sm hover:bg-orange-500 hover:text-white transition-all active:scale-90 flex items-center justify-center font-sans">
+                      className="w-10 h-10 bg-white rounded-xl shadow-sm hover:bg-orange-500 hover:text-white transition-all active:scale-90 flex items-center justify-center font-sans text-gray-800 border border-gray-100">
                       <Minus size={18} />
                     </button>
-                    <span className="text-xl font-black font-sans">
+                    <span className="text-xl font-black font-sans text-gray-800">
                       {quantity}
                     </span>
                     <button
                       onClick={() => setQuantity(quantity + 1)}
-                      className="w-10 h-10 bg-white rounded-xl shadow-sm hover:bg-orange-500 hover:text-white transition-all active:scale-90 flex items-center justify-center font-sans">
+                      className="w-10 h-10 bg-white rounded-xl shadow-sm hover:bg-orange-500 hover:text-white transition-all active:scale-90 flex items-center justify-center font-sans text-gray-800 border border-gray-100">
                       <Plus size={18} />
                     </button>
                   </div>
@@ -368,7 +388,7 @@ const Home = ({ searchTerm = "", addToCart, buyNow }) => {
                   <p className="text-gray-400 text-xs font-bold uppercase font-sans tracking-tighter">
                     Total Price
                   </p>
-                  <span className="text-3xl font-black font-sans">
+                  <span className="text-3xl font-black font-sans text-gray-900">
                     ₹{selectedItem.price * quantity}
                   </span>
                 </div>
