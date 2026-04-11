@@ -6,9 +6,16 @@ const CartSidebar = ({ isOpen, onClose, cartItems, removeFromCart }) => {
   const navigate = useNavigate();
 
   const total = cartItems.reduce(
-    (acc, item) => acc + parseInt(item.price.replace("₹", "") || 0),
+    (acc, item) => acc + parseInt(item.price.toString().replace("₹", "") || 0),
     0,
   );
+
+  // Jab cart item pe click ho
+  const handleItemClick = (item) => {
+    onClose(); // Sidebar band karein
+    // Menus page pe bhejein aur state mein ID pass karein
+    navigate("/menus", { state: { openDishId: item.id } });
+  };
 
   const handleCheckout = () => {
     onClose();
@@ -47,26 +54,31 @@ const CartSidebar = ({ isOpen, onClose, cartItems, removeFromCart }) => {
                 className="w-32 mb-4"
                 alt="empty"
               />
-              <p className="text-lg font-medium">Cart is empty</p>
+              <p className="text-lg font-medium text-gray-900">Cart is empty</p>
             </div>
           ) : (
             <div className="space-y-3">
               {cartItems.map((item) => (
                 <div
                   key={item.cartId}
-                  className="flex items-center gap-4 bg-white p-3 rounded-2xl border border-gray-100 shadow-sm">
-                  {/* FIX: Yahan span ki jagah img tag laga diya hai */}
+                  onClick={() => handleItemClick(item)} // Row click logic
+                  className="flex items-center gap-4 bg-white p-3 rounded-2xl border border-gray-100 shadow-sm cursor-pointer hover:border-orange-500 transition-all group">
                   <img
                     src={item.img}
                     alt={item.name}
                     className="w-16 h-16 object-cover rounded-xl"
                   />
                   <div className="flex-1">
-                    <h4 className="font-bold text-gray-800">{item.name}</h4>
+                    <h4 className="font-bold text-gray-800 group-hover:text-orange-600 transition-colors">
+                      {item.name}
+                    </h4>
                     <p className="text-orange-600 font-bold">{item.price}</p>
                   </div>
                   <button
-                    onClick={() => removeFromCart(item.cartId)}
+                    onClick={(e) => {
+                      e.stopPropagation(); // Stop navigation when deleting
+                      removeFromCart(item.cartId);
+                    }}
                     className="p-2 text-gray-400 hover:text-red-500 transition">
                     <Trash2 size={20} />
                   </button>
@@ -78,13 +90,9 @@ const CartSidebar = ({ isOpen, onClose, cartItems, removeFromCart }) => {
 
         {cartItems.length > 0 && (
           <div className="absolute bottom-0 left-0 w-full p-6 border-t bg-gray-50">
-            <div className="flex justify-between items-center mb-6">
-              <span className="text-gray-500 font-medium text-lg">
-                Total Amount:
-              </span>
-              <span className="text-2xl font-black text-gray-900">
-                ₹{total}
-              </span>
+            <div className="flex justify-between items-center mb-6 text-gray-900">
+              <span className="font-medium text-lg">Total Amount:</span>
+              <span className="text-2xl font-black">₹{total}</span>
             </div>
             <button
               onClick={handleCheckout}

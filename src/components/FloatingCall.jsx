@@ -1,11 +1,14 @@
 import React from "react";
 
-const FloatingCall = () => {
+const FloatingCall = ({ isCartOpen }) => {
   // Apna mobile number yahan likhein (bina space ke)
   const phoneNumber = "+917268875247";
 
+  // Agar CartSidebar khula hai, toh icon mat dikhao
+  if (isCartOpen) return null;
+
   return (
-    <div className="fixed bottom-24 right-6 md:bottom-10 md:right-10 z-[100]">
+    <div className="fixed bottom-24 right-6 md:bottom-10 md:right-10 z-[100] animate-in fade-in duration-300">
       {/* Outer Pulse Effect */}
       <span className="absolute inset-0 rounded-full bg-orange-500 animate-ping opacity-75"></span>
 

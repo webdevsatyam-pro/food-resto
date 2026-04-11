@@ -25,11 +25,14 @@ const ForgotPassword = () => {
               type="email"
               className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-orange-500 focus:outline-none"
               placeholder="example@mail.com"
+              required
             />
           </div>
-          <button className="w-full bg-orange-500 text-white font-bold py-3 rounded-lg hover:bg-orange-600 transition duration-300 shadow-md">
-            Send Reset Link
-          </button>
+          <Link to="/reset-password">
+            <button className="w-full bg-orange-500 text-white font-bold py-3 rounded-lg hover:bg-orange-600 transition duration-300 shadow-md">
+              Send Reset Link
+            </button>
+          </Link>
         </form>
 
         <div className="mt-6">

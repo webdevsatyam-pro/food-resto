@@ -16,6 +16,8 @@ import ScrollToTop from "./components/ScrollToTop";
 import FloatingCall from "./components/FloatingCall";
 import About from "./pages/About";
 import ContactUs from "./pages/Contact";
+import ForgotPassword from "./Auth/ForgotPassword";
+import ResetPassword from "./Auth/ResetPassword";
 
 function App() {
   const [cartItems, setCartItems] = useState([]);
@@ -99,13 +101,15 @@ function App() {
         />
 
         <Route path="/about" element={<About />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/reset-password" element={<ResetPassword />} />
 
         <Route path="/contact" element={<ContactUs />} />
       </Routes>
 
       <Footer />
 
-      <FloatingCall />
+      <FloatingCall isCartOpen={isCartOpen} />
     </div>
   );
 }

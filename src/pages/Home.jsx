@@ -45,8 +45,8 @@ const Home = ({ searchTerm = "", addToCart, buyNow }) => {
       time: "30 min",
       images: [
         "https://images.unsplash.com/photo-1589302168068-964664d93dc0?w=800",
-        "https://images.unsplash.com/photo-1563379091339-03b21bc4a4f8?w=800",
-        "https://images.unsplash.com/photo-1552590635-27c2c21289f5?w=800",
+        "https://i.pinimg.com/1200x/55/7e/2b/557e2bc0a6b57a247264d1968f6d0d2a.jpg",
+        "https://i.pinimg.com/736x/30/2c/00/302c00a4daa39edc339d94fb20b2d9a8.jpg",
       ],
       description:
         "Aromatic basmati rice cooked with premium spices and tender meat pieces.",
