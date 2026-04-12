@@ -10,12 +10,17 @@ const CartSidebar = ({ isOpen, onClose, cartItems, removeFromCart }) => {
     0,
   );
 
-  // Jab cart item pe click ho
+  // --- SMART NAVIGATION LOGIC ---
   const handleItemClick = (item) => {
     onClose(); // Sidebar band karein
-    // Menus page pe bhejein aur state mein ID pass karein
-    (navigate("/menus", { state: { openDishId: item.id } }),
-      navigate("/", { state: { openDishId: item.id } }));
+
+    // Agar ID 100 se kam hai toh Home page pe popup khulega
+    // Agar ID 100 se upar hai toh Menus page pe popup khulega
+    if (item.id < 100) {
+      navigate("/", { state: { openDishId: item.id } });
+    } else {
+      navigate("/menus", { state: { openDishId: item.id } });
+    }
   };
 
   const handleCheckout = () => {
@@ -62,7 +67,7 @@ const CartSidebar = ({ isOpen, onClose, cartItems, removeFromCart }) => {
               {cartItems.map((item) => (
                 <div
                   key={item.cartId}
-                  onClick={() => handleItemClick(item)} // Row click logic
+                  onClick={() => handleItemClick(item)} // Item click logic
                   className="flex items-center gap-4 bg-white p-3 rounded-2xl border border-gray-100 shadow-sm cursor-pointer hover:border-orange-500 transition-all group">
                   <img
                     src={item.img}
@@ -77,7 +82,7 @@ const CartSidebar = ({ isOpen, onClose, cartItems, removeFromCart }) => {
                   </div>
                   <button
                     onClick={(e) => {
-                      e.stopPropagation(); // Stop navigation when deleting
+                      e.stopPropagation();
                       removeFromCart(item.cartId);
                     }}
                     className="p-2 text-gray-400 hover:text-red-500 transition">
@@ -91,9 +96,13 @@ const CartSidebar = ({ isOpen, onClose, cartItems, removeFromCart }) => {
 
         {cartItems.length > 0 && (
           <div className="absolute bottom-0 left-0 w-full p-6 border-t bg-gray-50">
-            <div className="flex justify-between items-center mb-6 text-gray-900">
-              <span className="font-medium text-lg">Total Amount:</span>
-              <span className="text-2xl font-black">₹{total}</span>
+            <div className="flex justify-between items-center mb-6">
+              <span className="font-medium text-lg text-gray-900">
+                Total Amount:
+              </span>
+              <span className="text-2xl font-black text-gray-900">
+                ₹{total}
+              </span>
             </div>
             <button
               onClick={handleCheckout}

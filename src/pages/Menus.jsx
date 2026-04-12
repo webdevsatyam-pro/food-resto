@@ -26,7 +26,7 @@ const Menus = ({ onAddToCart, buyNow }) => {
   const [currentImgIndex, setCurrentImgIndex] = useState(0);
   const [quantity, setQuantity] = useState(1);
 
-  // 1. AAPKA PURA DATA
+  // 1. DATA
   const foodItems = [
     {
       id: 101,
@@ -150,7 +150,7 @@ const Menus = ({ onAddToCart, buyNow }) => {
     },
   ];
 
-  // 2. AUTO-OPEN POPUP & SCROLL LOGIC
+  // 2. AUTO-OPEN LOGIC (Cart se aane par popup khulega)
   useEffect(() => {
     if (location.state && location.state.openDishId) {
       const dishId = location.state.openDishId;
@@ -160,8 +160,6 @@ const Menus = ({ onAddToCart, buyNow }) => {
         setSelectedItem(dishToOpen);
         setQuantity(1);
         setCurrentImgIndex(0);
-
-        // Scroll to card
         setTimeout(() => {
           const element = document.getElementById(`dish-${dishId}`);
           if (element)
@@ -171,7 +169,7 @@ const Menus = ({ onAddToCart, buyNow }) => {
     }
   }, [location.state]);
 
-  // 3. BACKGROUND SCROLL LOCK
+  // 3. SCROLL LOCK
   useEffect(() => {
     document.body.style.overflow = selectedItem ? "hidden" : "unset";
     return () => {
@@ -179,7 +177,7 @@ const Menus = ({ onAddToCart, buyNow }) => {
     };
   }, [selectedItem]);
 
-  // Auto-slider for popup
+  // Auto-slider
   useEffect(() => {
     let timer;
     if (selectedItem) {
@@ -222,7 +220,7 @@ const Menus = ({ onAddToCart, buyNow }) => {
       <div className="max-w-7xl mx-auto px-4 md:px-6 pt-6 md:pt-10">
         {/* Header */}
         <div className="mb-8 text-center md:text-left">
-          <h1 className="text-3xl md:text-4xl font-black tracking-tight">
+          <h1 className="text-3xl md:text-5xl font-black tracking-tight">
             Our Delicious <span className="text-orange-600 italic">Menus</span>
           </h1>
           <p className="text-gray-500 font-medium">
@@ -230,7 +228,7 @@ const Menus = ({ onAddToCart, buyNow }) => {
           </p>
         </div>
 
-        {/* Search & Filter */}
+        {/* Search & Filter Section */}
         <div className="flex flex-col md:flex-row items-center gap-4 bg-white p-3 md:p-4 rounded-[1.5rem] md:rounded-[2rem] shadow-sm mb-8 md:mb-12 border border-gray-50">
           <div className="relative w-full md:flex-1 group">
             <Search
@@ -240,7 +238,7 @@ const Menus = ({ onAddToCart, buyNow }) => {
             <input
               type="text"
               placeholder="Search dishes..."
-              className="w-full pl-12 pr-4 py-3 md:py-3.5 bg-gray-50 rounded-2xl border-2 border-transparent outline-none focus:border-orange-500 focus:bg-white focus:ring-4 focus:ring-orange-100 transition-all font-bold"
+              className="w-full pl-12 pr-4 py-3 md:py-3.5 bg-gray-50 rounded-2xl border-2 border-transparent outline-none focus:border-orange-500 focus:bg-white focus:ring-4 focus:ring-orange-100 transition-all duration-300 font-bold text-sm md:text-base"
               onChange={(e) => setSearchQuery(e.target.value)}
             />
           </div>
@@ -249,7 +247,7 @@ const Menus = ({ onAddToCart, buyNow }) => {
               <button
                 key={cat}
                 onClick={() => setActiveCategory(cat)}
-                className={`px-5 py-2.5 rounded-xl text-xs md:text-sm font-black whitespace-nowrap transition-all ${activeCategory === cat ? "bg-orange-600 text-white shadow-lg shadow-orange-200" : "bg-orange-50 text-orange-600 hover:bg-orange-100"}`}>
+                className={`px-4 md:px-6 py-2 md:py-3 rounded-xl text-[10px] md:text-sm font-black whitespace-nowrap transition-all ${activeCategory === cat ? "bg-orange-600 text-white shadow-lg shadow-orange-200" : "bg-orange-50 text-orange-600 hover:bg-orange-100"}`}>
                 {cat}
               </button>
             ))}
@@ -260,15 +258,15 @@ const Menus = ({ onAddToCart, buyNow }) => {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 md:gap-8">
           {filteredItems.map((item) => (
             <div
-              id={`dish-${item.id}`} // Unique ID for scroll
+              id={`dish-${item.id}`}
               key={item.id}
               onClick={() => {
                 setSelectedItem(item);
                 setCurrentImgIndex(0);
                 setQuantity(1);
               }}
-              className="group bg-white rounded-[2rem] p-4 shadow-sm border border-gray-50 cursor-pointer hover:shadow-xl transition-all duration-300 active:scale-95">
-              <div className="relative h-40 md:h-48 w-full rounded-[1.5rem] overflow-hidden mb-4">
+              className="group bg-white rounded-[2rem] p-4 shadow-sm border border-gray-50 cursor-pointer hover:shadow-xl transition-all active:scale-95">
+              <div className="relative h-44 md:h-48 w-full rounded-[1.5rem] md:rounded-[2rem] overflow-hidden mb-4">
                 <img
                   src={item.images[0]}
                   className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
@@ -279,10 +277,10 @@ const Menus = ({ onAddToCart, buyNow }) => {
                   <span className="text-xs font-black">{item.rating}</span>
                 </div>
               </div>
-              <h3 className="text-lg md:text-xl font-black mb-1 group-hover:text-orange-600 transition-colors uppercase tracking-tight">
+              <h3 className="text-lg md:text-xl font-black mb-1 group-hover:text-orange-600 transition-colors uppercase tracking-tight line-clamp-1">
                 {item.name}
               </h3>
-              <p className="text-gray-500 text-[11px] md:text-xs line-clamp-2 mb-4 italic">
+              <p className="text-gray-500 text-[11px] md:text-xs line-clamp-2 mb-4 italic leading-relaxed">
                 {item.description}
               </p>
               <div className="flex items-center justify-between">
@@ -294,7 +292,7 @@ const Menus = ({ onAddToCart, buyNow }) => {
                     e.stopPropagation();
                     handleAddToCart(item);
                   }}
-                  className="p-2.5 md:p-3 bg-orange-600 text-white rounded-2xl hover:bg-black transition-all active:scale-90 shadow-md">
+                  className="p-2.5 md:p-3 bg-orange-600 text-white rounded-2xl hover:bg-black transition-all shadow-md active:scale-90">
                   <ShoppingCart size={18} />
                 </button>
               </div>
@@ -315,7 +313,7 @@ const Menus = ({ onAddToCart, buyNow }) => {
               className="absolute top-4 right-4 md:top-6 md:right-6 z-[220] p-2 bg-white text-gray-900 rounded-full shadow-lg hover:bg-orange-600 hover:text-white transition-all">
               <X size={20} />
             </button>
-            <div className="relative h-56 sm:h-64 md:h-full md:w-1/2 bg-gray-100 group shrink-0">
+            <div className="relative h-60 sm:h-72 md:h-full md:w-1/2 bg-gray-100 group shrink-0">
               <img
                 src={selectedItem.images[currentImgIndex]}
                 className="w-full h-full object-cover transition-all"
@@ -328,8 +326,8 @@ const Menus = ({ onAddToCart, buyNow }) => {
                     p === 0 ? selectedItem.images.length - 1 : p - 1,
                   );
                 }}
-                className="absolute left-2 top-1/2 p-1.5 bg-white/50 rounded-full text-gray-800">
-                <ChevronLeft />
+                className="absolute left-2 md:left-4 top-1/2 -translate-y-1/2 p-1.5 md:p-2 bg-white/50 rounded-full text-gray-800 hover:bg-white transition-all">
+                <ChevronLeft size={20} />
               </button>
               <button
                 onClick={(e) => {
@@ -338,14 +336,14 @@ const Menus = ({ onAddToCart, buyNow }) => {
                     (p) => (p + 1) % selectedItem.images.length,
                   );
                 }}
-                className="absolute right-2 md:right-4 top-1/2 p-1.5 bg-white/50 rounded-full text-gray-800">
-                <ChevronRight />
+                className="absolute right-2 md:right-4 top-1/2 -translate-y-1/2 p-1.5 md:p-2 bg-white/50 rounded-full text-gray-800 hover:bg-white transition-all">
+                <ChevronRight size={20} />
               </button>
               <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-1.5 md:gap-2">
                 {selectedItem.images.map((_, i) => (
                   <div
                     key={i}
-                    className={`h-1.5 rounded-full transition-all ${i === currentImgIndex ? "w-4 md:w-6 bg-orange-500" : "w-1 md:w-1.5 bg-white/80"}`}
+                    className={`h-1 md:h-1.5 rounded-full transition-all ${i === currentImgIndex ? "w-4 md:w-6 bg-orange-500" : "w-1 md:w-1.5 bg-white/80"}`}
                   />
                 ))}
               </div>
@@ -353,59 +351,57 @@ const Menus = ({ onAddToCart, buyNow }) => {
 
             <div className="p-6 md:p-12 md:w-1/2 flex flex-col justify-between overflow-y-auto bg-white">
               <div>
-                <div className="flex items-center gap-2 text-orange-600 font-black text-xs uppercase mb-2">
+                <div className="flex items-center gap-2 text-orange-600 font-black text-[10px] md:text-xs uppercase mb-2 md:mb-3">
                   <Flame size={12} /> {selectedItem.category}
                 </div>
-                <h2 className="text-2xl md:text-4xl font-black mb-2 uppercase">
+                <h2 className="text-2xl md:text-4xl font-black text-gray-900 mb-2 md:mb-4 tracking-tighter uppercase leading-tight">
                   {selectedItem.name}
                 </h2>
-                <div className="flex gap-4 mb-4 text-xs md:text-sm">
-                  <span className="flex items-center gap-1 bg-orange-50 text-orange-600 px-2.5 py-1 rounded-lg font-black">
+                <div className="flex gap-4 mb-4 text-xs md:text-sm font-sans">
+                  <span className="flex items-center gap-1 bg-orange-50 text-orange-600 px-2.5 py-1 rounded-lg font-black font-sans">
                     <Star fill="currentColor" size={14} /> {selectedItem.rating}
                   </span>
                   <span className="text-gray-400 font-bold flex items-center gap-1">
                     <Clock size={14} /> 25 Min Delivery
                   </span>
                 </div>
-                <p className="text-gray-600 italic text-sm md:text-lg mb-6 leading-relaxed">
+                <p className="text-gray-600 italic text-[13px] md:text-lg mb-6 leading-relaxed">
                   "{selectedItem.description}"
                 </p>
-
                 <div className="flex flex-col gap-2 mb-4">
-                  <p className="text-[10px] font-black uppercase text-gray-400 tracking-widest">
+                  <p className="text-[10px] font-black uppercase text-gray-400 tracking-widest font-sans">
                     Select Quantity
                   </p>
                   <div className="flex items-center gap-6 bg-gray-50 w-fit p-1.5 rounded-2xl border border-gray-100 text-gray-800">
                     <button
                       onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                      className="w-8 h-8 md:w-10 bg-white rounded-xl shadow-sm hover:bg-orange-500 hover:text-white transition-all active:scale-90 flex items-center justify-center border border-gray-100">
+                      className="w-8 h-8 md:w-10 bg-white rounded-xl shadow-sm hover:bg-orange-500 hover:text-white transition-all active:scale-90 flex items-center justify-center border border-gray-100 font-sans">
                       <Minus size={16} />
                     </button>
-                    <span className="text-lg md:text-xl font-black">
+                    <span className="text-base md:text-xl font-black font-sans">
                       {quantity}
                     </span>
                     <button
                       onClick={() => setQuantity(quantity + 1)}
-                      className="w-8 h-8 md:w-10 bg-white rounded-xl shadow-sm hover:bg-orange-500 hover:text-white transition-all active:scale-90 flex items-center justify-center border border-gray-100">
+                      className="w-8 h-8 md:w-10 bg-white rounded-xl shadow-sm hover:bg-orange-500 hover:text-white transition-all active:scale-90 flex items-center justify-center border border-gray-100 font-sans">
                       <Plus size={16} />
                     </button>
                   </div>
                 </div>
               </div>
-
-              <div className="mt-auto pt-4 border-t flex items-center justify-between">
+              <div className="mt-6 md:mt-auto pt-4 border-t border-gray-100 flex items-center justify-between">
                 <div>
-                  <p className="text-gray-400 text-[10px] font-bold tracking-widest">
+                  <p className="text-gray-400 text-[10px] font-bold uppercase tracking-widest font-sans">
                     Total Price
                   </p>
-                  <p className="text-2xl md:text-4xl font-black text-gray-900 leading-none">
+                  <p className="text-2xl md:text-4xl font-black text-gray-900 leading-none font-sans">
                     ₹{selectedItem.price * quantity}
                   </p>
                 </div>
                 <button
                   onClick={() => handleOrderNow(selectedItem)}
-                  className="bg-orange-600 text-white px-6 md:px-10 py-3.5 rounded-2xl font-black hover:bg-black transition-all shadow-xl shadow-orange-100 flex items-center gap-2 active:scale-95 uppercase tracking-tighter">
-                  <ShoppingCart size={18} /> ORDER NOW
+                  className="bg-orange-600 text-white px-5 md:px-10 py-3 md:py-5 rounded-2xl font-black text-xs md:text-lg hover:bg-black transition-all shadow-xl shadow-orange-100 flex items-center gap-2 active:scale-95 uppercase tracking-tighter">
+                  <ShoppingCart size={18} md:size={24} /> ORDER NOW
                 </button>
               </div>
             </div>
