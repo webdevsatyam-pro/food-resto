@@ -18,6 +18,7 @@ import About from "./pages/About";
 import ContactUs from "./pages/Contact";
 import ForgotPassword from "./Auth/ForgotPassword";
 import ResetPassword from "./Auth/ResetPassword";
+import NotFound from "./pages/NotFound";
 
 function App() {
   const [cartItems, setCartItems] = useState([]);
@@ -105,6 +106,7 @@ function App() {
         <Route path="/reset-password" element={<ResetPassword />} />
 
         <Route path="/contact" element={<ContactUs />} />
+        <Route path="*" element={<NotFound />} />
       </Routes>
 
       <Footer />
