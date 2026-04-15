@@ -19,6 +19,7 @@ import ContactUs from "./pages/Contact";
 import ForgotPassword from "./Auth/ForgotPassword";
 import ResetPassword from "./Auth/ResetPassword";
 import NotFound from "./pages/NotFound";
+import BackToTop from "./components/BackToTop";
 
 function App() {
   const [cartItems, setCartItems] = useState([]);
@@ -112,6 +113,8 @@ function App() {
       <Footer />
 
       <FloatingCall isCartOpen={isCartOpen} />
+
+      <BackToTop />
     </div>
   );
 }
